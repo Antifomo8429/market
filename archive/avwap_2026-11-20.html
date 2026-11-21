@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>錨定 VWAP（AVWAP）觀察：SPX 與台股加權（2026-11-20）</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--fg:#1b2333;--mut:#667085;--acc:#2563eb;--bd:#e4e7ef;--up:#b42318;--dn:#027a48;--chip:#eef2ff}
+@media (prefers-color-scheme:dark){:root{--bg:#0f141c;--card:#1a212c;--fg:#e8edf5;--mut:#9aa4b2;--acc:#60a5fa;--bd:#2a3342;--up:#f97066;--dn:#6ce9a6;--chip:#1f2a44}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Noto Sans CJK TC","Microsoft JhengHei",sans-serif;
+line-height:1.6}
+main{max-width:980px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:1.55rem;margin:8px 0 6px;line-height:1.3}
+h2{font-size:1.22rem;margin:28px 0 10px}
+h3{font-size:1.02rem;margin:18px 0 8px}
+.sub,.cap,.foot{color:var(--mut);font-size:.92rem}
+.foot{font-size:.84rem;margin-top:28px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px 18px 14px;margin:0 0 16px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+img.chart{width:100%;height:auto;border-radius:10px;border:1px solid var(--bd);background:#fff;display:block}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{border-bottom:1px solid var(--bd);padding:7px 8px;text-align:left;vertical-align:top}
+th{font-size:.8rem;color:var(--mut);font-weight:600;white-space:nowrap}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.ref td{color:var(--mut);font-style:italic}
+.pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:.8rem;font-weight:650;background:#eef2ff;color:var(--acc)}
+.pill.up{background:#fef3f2;color:var(--up)}
+.pill.dn{background:#ecfdf3;color:var(--dn)}
+@media (prefers-color-scheme:dark){.pill{background:#1f2a44}.pill.up{background:#3b1614}.pill.dn{background:#0f2d1f} img.chart{background:#111}}
+ul.tight li{margin:4px 0}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:10px 0 4px}
+.kv .b{background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:10px 12px}
+.kv .l{color:var(--mut);font-size:.78rem}
+.kv .v{font-size:1.12rem;font-weight:730;font-variant-numeric:tabular-nums}
+.call{border-left:3px solid var(--acc);padding:2px 0 2px 12px;margin:8px 0}
+details.ev{margin-top:10px}
+details.ev summary{cursor:pointer;color:var(--acc);font-weight:600}
+.mut{color:var(--mut)}
+a{color:var(--acc)}
+</style>
+</head>
+<body>
+<main>
+<p class="cap"><a href="./">台股每日市場報告</a>　·　AVWAP 專題</p>
+<h1>錨定成交量加權平均價（Anchored VWAP）</h1>
+<p class="sub">SPX 與台灣加權指數，自各段「低點日」起算的平均持有成本線。資料截至 2026-11-20 收盤（台北時間）。本頁只做觀察，不構成投資建議。</p>
+
+<section class="card">
+<h2>怎麼算</h2>
+<p>AVWAP 從錨定日 t<sub>0</sub> 起累加，不會每日重置：</p>
+<p><b>AVWAP<sub>t</sub> = Σ(典型價 × 成交量) / Σ(成交量)</b>，由 t<sub>0</sub> 累加到 t。</p>
+<p>典型價採 TradingView 預設 <b>(H + L + C) / 3</b>。錨定日一律取該時段的「最低價日」（不是最低收盤日）。指數本身不還原權息；SPX、加權都是<b>價格指數</b>，無需還原。</p>
+<ul class="tight">
+<li><b>SPX</b>：Yahoo Finance <code>^GSPC</code> 日線 OHLC，成交量用 Yahoo 提供的指數成分股合計成交量（非可交易商品本身的成交量）。</li>
+<li><b>加權指數</b>：FinLab <code>taiex_total_index</code> 開高低收；權重用 <code>market_transaction_info:成交金額</code> 的上市市場成交金額（TAIEX），不是指數點數成交量，也不是櫃買。</li>
+</ul>
+</section>
+
+<section class="card">
+<h2>SPX：現在的結構</h2>
+
+<div class="call">
+<p>原文把關鍵放在「紫色 2025/11/21 這條站不站得穩」。以 <b>2026-11-20</b> 收盤來看，這題已經先給了答案：<b>沒站穩</b>。</p>
+<p>SPX 在 11/17–11/18 還在紫線上方不遠處（低點距離約 +0.5%），11/19 收盤跌破（約 -1.00%），11/20 繼續往下，收盤 6,910.39，相對紫線 -4.65%，相對當日低點 -5.03%。</p>
+<p>跌破之後，價格正好落到下一層：<b>藍色 2025 年低 AVWAP（6,864.39）</b>。11/20 最低 6,882.66，距離藍線只有 +0.27%，收盤 +0.67%。這與原文「站不穩就回測 2025 年低 AVWAP」的層次剛好對上，只是發生在這一次下跌裡。</p>
+<p>若藍線也守不住，再往下的參考是橘色 2023 年低 AVWAP（5,897.90，收盤仍高 +17.17%），以及 2023/10/27 參考線（6,276.69，現距 +10.10%）。2022 年低 AVWAP 在 5,795.90。</p>
+<p class="cap">原文「昨天因美伊停戰大漲、站回紫線」與 11/20 的實際走勢不符（當日大跌）。那段描述應是其他交易日的盤勢，這裡只按最新收盤核對結構，不沿用「昨天站上」的判斷。</p>
+</div>
+
+<div class="kv">
+  <div class="b"><div class="l">SPX 收盤（2026-11-20）</div><div class="v">6,910.39</div></div>
+  <div class="b"><div class="l">相對 2025 年低 AVWAP</div><div class="v">+0.67%</div></div>
+  <div class="b"><div class="l">相對 2025/11/21 AVWAP</div><div class="v">-4.65%</div></div>
+</div>
+<p class="cap">圖 1｜近 18 個月 K 線與各條 AVWAP。顏色：紫＝2025/11/21、藍＝2025 年低、橙＝2023 年低、虛橙＝2023/10/27 波段低（參考）、綠＝2022 年低、紅＝2020 年低、棕＝2018 年低。</p>
+<img class="chart" src="avwap/spx_current.png" alt="SPX 近 18 個月 Anchored VWAP">
+<h3>最新讀數</h3>
+<p class="cap">收盤 6,910.39，當日低 6,882.66、高 7,198.67。</p>
+<div class="scroll"><table>
+<thead><tr><th>錨定</th><th>錨定日</th><th>AVWAP</th><th>收盤相對</th><th>當日低點相對</th><th>位置</th></tr></thead>
+<tbody>
+<tr><td>2018 年低</td><td>2018-12-26</td><td class='num'>4,768.45</td><td class='num'>+44.92%</td><td class='num'>+44.34%</td><td><span class="pill up">之上</span></td></tr>
+<tr><td>2020 年低</td><td>2020-03-23</td><td class='num'>5,050.88</td><td class='num'>+36.82%</td><td class='num'>+36.27%</td><td><span class="pill up">之上</span></td></tr>
+<tr><td>2022 年低</td><td>2022-10-13</td><td class='num'>5,795.90</td><td class='num'>+19.23%</td><td class='num'>+18.75%</td><td><span class="pill up">之上</span></td></tr>
+<tr><td>2023 年低</td><td>2023-01-03</td><td class='num'>5,897.90</td><td class='num'>+17.17%</td><td class='num'>+16.70%</td><td><span class="pill up">之上</span></td></tr>
+<tr><td>2025 年低</td><td>2025-04-07</td><td class='num'>6,864.39</td><td class='num'>+0.67%</td><td class='num'>+0.27%</td><td><span class="pill up">之上</span></td></tr>
+<tr><td>2025/11/21 波段低</td><td>2025-11-21</td><td class='num'>7,247.31</td><td class='num'>-4.65%</td><td class='num'>-5.03%</td><td><span class="pill dn">之下</span></td></tr>
+<tr class="ref"><td>2023/10/27 波段低（參考）</td><td>2023-10-27</td><td class='num'>6,276.69</td><td class='num'>+10.10%</td><td class='num'>+9.65%</td><td><span class="pill up">之上</span></td></tr>
+</tbody></table></div>
+
+<ul class="tight">
+<li><b>2018 年低</b>：2018-12-26，當日最低 2,346.58、收盤 2,467.70。日曆年最低低點。前一個交易日 12/24（聖誕夜）最低 2,351.10，兩者 AVWAP 到今日幾乎相同（差不到 1 點）。</li>
+<li><b>2020 年低</b>：2020-03-23，當日最低 2,191.86、收盤 2,237.40。COVID 低點。</li>
+<li><b>2022 年低</b>：2022-10-13，當日最低 3,491.58、收盤 3,669.91。與原文寫的 2022/10/13 一致，也是當年最低。</li>
+<li><b>2023 年低</b>：2023-01-03，當日最低 3,794.33、收盤 3,824.14。這是 2023 年<b>日曆年</b>最低（年初承接 2022 熊市）。下半年波段低在 2023-10-27、最低 4,103.78，已另畫虛線作參考；兩條線現在差一截，不能混用。</li>
+<li><b>2025 年低</b>：2025-04-07，當日最低 4,835.04、收盤 5,062.25。與原文「去年 4/7、當年最低點」一致。</li>
+<li><b>2025/11/21 波段低</b>：2025-11-21，當日最低 6,521.92、收盤 6,602.99。2025-11-21 當日最低 6,521.92、收盤 6,602.99。它是前後 5、10、15、20 個交易日窗口裡的最低低點，可以視為當地波段低，錨定日採用原文寫的 2025-11-21，無需改期。</li>
+<li class="mut"><b>2023/10/27 波段低（參考，非年度低）</b>：最低 4,103.78。今日 AVWAP 6,276.69，收盤相對 +10.10%。</li>
+</ul>
+
+</section>
+
+<section class="card">
+<h2>SPX：長週期回測，核對原文主張</h2>
+<p class="cap">圖 2｜2018 年至今收盤與各條 AVWAP。倒三角為原文提到的歷史測試日，標示當日<b>最低價</b>相對該條 AVWAP 的距離。</p>
+<img class="chart" src="avwap/spx_long.png" alt="SPX 2018 至今 Anchored VWAP 與歷史回測">
+
+<h3>逐條核對</h3>
+<ol>
+<li><b>「2022 年低 AVWAP 在 2023/10/27 被精準回測並撐住」——成立。</b>
+2023-10-27 當日，2022-10-13 起算的 AVWAP 為 4,139.53，當日最低 4,103.78（-0.86%），收盤 -0.54%。低點只略為刺破 0.86%，之後確實展開一波上漲。這是原文裡最乾淨的一筆。</li>
+<li><b>「2018 年低 AVWAP 在 2022/10/13（當年最低）被回測，成為熊市結束轉折」——方向對，但不是精確貼齊。</b>
+2022-10-13 當日，2018-12-26 起算的 AVWAP 為 3,610.05，當日最低 3,491.58（-3.28%），收盤卻回到線上（+1.66%）。低點下殺超過 3%，稱「回測到」可以，稱「精準」則過頭。若改用 12/24 錨定，結論幾乎一樣。</li>
+<li><b>「2023 年低 AVWAP 在 2025/4/7 被回測、且為當年最低」——要先講清楚「2023 年低」指哪一天。</b>
+2025-04-07 確實是 2025 年日曆最低，這部分正確。
+若錨定 <b>2023-01-03（日曆年低）</b>，當日 AVWAP 為 4,982.85，最低 4,835.04（-2.97%），收盤回到線上（+1.59%）。這與 2022/10/13 測 2018 線的型態類似：先跌破約 3%，當日收復。
+若錨定原文也強調的 <b>2023-10-27 波段低</b>，當日 AVWAP 為 5,407.73，最低相對 -10.59%，收盤 -6.39%，<b>不是回測，是明顯跌破</b>。
+另外，原文前段寫「2022 年低 AVWAP 正好對應到去年 4/7 的低點支撐」——這筆反而更準：2025-04-07 對 2022-10-13 AVWAP（4,879.35）低點距離 -0.91%，收盤 +3.75%。4/7 精準測到的是 <b>2022 年低</b> 這條，不是 2023/10/27 那條。</li>
+<li><b>「2020 年低 AVWAP 在 2022 年下跌過程中多次成為反彈支撐」——部分成立，但不是熊市的最終地板。</b>
+2022 年有多日低點落在 2020 年低 AVWAP 附近（5 月、7 月、9 月、12 月都曾貼近到 0.2% 以內；12/15 幾乎貼齊）。它在年中確實像一條反覆測試的成本區。可是 10 月那一腿把價格帶離這條線：2022-10-13 最低 3,491，當時 2020 AVWAP 約在 3,870，低點距離約 −10%。所以它多次扮演過支撐／磁鐵，但<b>沒有守住整段熊市的底部</b>；真正接近 2022 年最低的，是更下面的 2018 年低 AVWAP（仍有 3.3% 的下影線）。</li>
+</ol>
+<p>一句話：AVWAP 作為「上一輪低點延伸出來的平均成本」確實會反覆被市場拿來測試，有幾筆（尤其是 2023/10/27 測 2022 線、2025/4/7 測 2022 線）很漂亮。但它不是保證守得住的地板，跌破之後就繼續往下一層找，這部分原文的層次論述與這次 11 月的走勢相符。</p>
+
+</section>
+
+<section class="card">
+<h2>SPX：AVWAP 當支撐？一次誠實的小樣本檢查</h2>
+<p>規則刻意寫死、而且很嚴，避免把「曾經靠近過」都算成支撐：</p>
+<ul class="tight">
+<li><b>回測</b>：當日最低價落在該條 AVWAP 的 ±1% 以內，且<b>之前 20 個交易日收盤都在線上</b>（從上方下來測，不是從下方反彈穿越）。錨定日本身不計。</li>
+<li>相鄰 10 日內的接觸合併成一次事件。</li>
+<li><b>守住／失守</b>：之後 20 或 60 個交易日裡，若有任何一日<b>收盤</b>跌破當時 AVWAP 超過 1%，記為失守（只看收盤、不看下影線；若期限未滿但已經失守，仍記失守）。期限未滿且尚未失守的標「未到期」。</li>
+</ul>
+<p class="cap">樣本很小，只適合當描述，不能當勝率。較新的錨定線（2025 年低、2025/11/21）事件更少。</p>
+<div class="scroll"><table>
+<thead><tr><th>錨定</th><th>次數</th><th>之後 20 日</th><th>20 日報酬中位</th><th>之後 60 日</th><th>60 日報酬中位</th></tr></thead>
+<tbody>
+<tr><td>2018 年低</td><td class='num'>6</td><td>守住 5／失守 1</td><td class='num'>+4.13%</td><td>守住 5／失守 1</td><td class='num'>+5.89%</td></tr><tr><td>2020 年低</td><td class='num'>5</td><td>守住 2／失守 3</td><td class='num'>-0.74%</td><td>守住 1／失守 4</td><td class='num'>+2.03%</td></tr><tr><td>2022 年低</td><td class='num'>5</td><td>守住 2／失守 3</td><td class='num'>+4.76%</td><td>守住 2／失守 3</td><td class='num'>+9.33%</td></tr><tr><td>2023 年低</td><td class='num'>4</td><td>守住 2／失守 2</td><td class='num'>+1.59%</td><td>守住 1／失守 3</td><td class='num'>+11.09%</td></tr><tr><td>2025 年低</td><td class='num'>2</td><td>守住 0／失守 1／未到期 1</td><td class='num'>+9.26%</td><td>守住 0／失守 1／未到期 1</td><td class='num'>+15.44%</td></tr><tr><td>2025/11/21 波段低</td><td class='num'>1</td><td>守住 0／失守 1</td><td class='num'>-5.86%</td><td>守住 0／失守 1</td><td class='num'>-5.86%</td></tr>
+</tbody></table></div>
+<details class="ev"><summary>逐筆事件（樣本小，僅供描述）</summary>
+<div class="scroll"><table>
+<thead><tr><th>錨定</th><th>回測日</th><th>低點距離</th><th>20 日</th><th>20 日報酬</th><th>60 日</th><th>60 日報酬</th></tr></thead>
+<tbody>
+<tr><td>2018 年低</td><td>2019-05-29</td><td class='num'>-0.05%</td><td>守住</td><td class='num'>+4.70%</td><td>守住</td><td class='num'>+5.03%</td></tr><tr><td>2018 年低</td><td>2019-08-05</td><td class='num'>+0.20%</td><td>守住</td><td class='num'>+2.16%</td><td>守住</td><td class='num'>+6.75%</td></tr><tr><td>2018 年低</td><td>2019-08-23</td><td class='num'>+0.43%</td><td>守住</td><td class='num'>+5.08%</td><td>守住</td><td class='num'>+9.66%</td></tr><tr><td>2018 年低</td><td>2019-10-03</td><td class='num'>+0.46%</td><td>守住</td><td class='num'>+4.36%</td><td>守住</td><td class='num'>+10.67%</td></tr><tr><td>2018 年低</td><td>2020-02-27</td><td class='num'>+0.77%</td><td>失守</td><td class='num'>-11.71%</td><td>失守</td><td class='num'>-0.78%</td></tr><tr><td>2018 年低</td><td>2022-09-26</td><td class='num'>+0.98%</td><td>守住</td><td class='num'>+3.89%</td><td>守住</td><td class='num'>+4.56%</td></tr><tr><td>2020 年低</td><td>2022-05-12</td><td class='num'>-0.27%</td><td>守住</td><td class='num'>-0.74%</td><td>失守</td><td class='num'>+4.90%</td></tr><tr><td>2020 年低</td><td>2022-06-10</td><td class='num'>+0.64%</td><td>失守</td><td class='num'>-2.10%</td><td>失守</td><td class='num'>+2.03%</td></tr><tr><td>2020 年低</td><td>2022-09-01</td><td class='num'>+0.53%</td><td>失守</td><td class='num'>-9.61%</td><td>失守</td><td class='num'>-0.07%</td></tr><tr><td>2020 年低</td><td>2022-12-15</td><td class='num'>+0.00%</td><td>失守</td><td class='num'>+2.44%</td><td>失守</td><td class='num'>-0.10%</td></tr><tr><td>2020 年低</td><td>2023-03-09</td><td class='num'>+0.58%</td><td>守住</td><td class='num'>+4.76%</td><td>守住</td><td class='num'>+9.33%</td></tr><tr><td>2022 年低</td><td>2022-12-15</td><td class='num'>-0.06%</td><td>失守</td><td class='num'>+2.44%</td><td>失守</td><td class='num'>-0.10%</td></tr><tr><td>2022 年低</td><td>2023-02-23</td><td class='num'>+0.98%</td><td>失守</td><td class='num'>-1.59%</td><td>失守</td><td class='num'>+4.48%</td></tr><tr><td>2022 年低</td><td>2023-03-09</td><td class='num'>-0.70%</td><td>失守</td><td class='num'>+4.76%</td><td>失守</td><td class='num'>+9.33%</td></tr><tr><td>2022 年低</td><td>2023-10-26</td><td class='num'>-0.28%</td><td>守住</td><td class='num'>+10.20%</td><td>守住</td><td class='num'>+17.68%</td></tr><tr><td>2022 年低</td><td>2025-04-07</td><td class='num'>-0.91%</td><td>守住</td><td class='num'>+10.76%</td><td>守住</td><td class='num'>+24.04%</td></tr><tr><td>2023 年低</td><td>2023-02-17</td><td class='num'>+0.62%</td><td>失守</td><td class='num'>-3.13%</td><td>失守</td><td class='num'>+0.76%</td></tr><tr><td>2023 年低</td><td>2023-05-04</td><td class='num'>+0.62%</td><td>守住</td><td class='num'>+5.23%</td><td>守住</td><td class='num'>+11.13%</td></tr><tr><td>2023 年低</td><td>2023-09-27</td><td class='num'>+0.71%</td><td>守住</td><td class='num'>-2.05%</td><td>失守</td><td class='num'>+11.05%</td></tr><tr><td>2023 年低</td><td>2023-10-20</td><td class='num'>+0.15%</td><td>失守</td><td class='num'>+6.86%</td><td>失守</td><td class='num'>+13.18%</td></tr><tr><td>2025 年低</td><td>2026-03-20</td><td class='num'>+0.29%</td><td>失守</td><td class='num'>+9.26%</td><td>失守</td><td class='num'>+15.44%</td></tr><tr><td>2025 年低</td><td>2026-11-20</td><td class='num'>+0.27%</td><td>未到期</td><td class='num'>—</td><td>未到期</td><td class='num'>—</td></tr><tr><td>2025/11/21 波段低</td><td>2026-11-17</td><td class='num'>+0.55%</td><td>失守</td><td class='num'>-5.86%</td><td>失守</td><td class='num'>-5.86%</td></tr>
+</tbody></table></div></details>
+</section>
+
+<section class="card">
+<h2>加權指數：同一套方法</h2>
+
+<div class="call">
+<p>加權在 11 月的修正比 SPX 更深。10 月底附近高點約 49,969，到 11/20 最低 35,738.68、收盤 36,033.29，從高點回撤約三成。</p>
+<p>11/20 收盤相對 <b>2025 年低 AVWAP（36,971.89）</b> 為 -2.54%，當日低點 -3.34%，已經略為跌破這條成本線，還沒有像 SPX 那樣精確地停在線上。</p>
+<p>2026/07/29 波段低延伸的 AVWAP 在 45,349.12，收盤已低 -20.54%，這條線目前是壓力、不是支撐。再往下的主要成本線是 2023 年低 AVWAP（30,265.80，現距 +19.06%）與 2022 年低 AVWAP（29,928.77）。</p>
+</div>
+
+<div class="kv">
+  <div class="b"><div class="l">加權收盤（2026-11-20）</div><div class="v">36,033.29</div></div>
+  <div class="b"><div class="l">相對 2025 年低 AVWAP</div><div class="v">-2.54%</div></div>
+  <div class="b"><div class="l">相對 2026/07/29 AVWAP</div><div class="v">-20.54%</div></div>
+</div>
+<p class="cap">圖 3｜近 18 個月 K 線。顏色規則同 SPX；青綠色為 2026/07/29 最近一次確認的波段低。2026-11-20 為近半年最低，但還不是已確認的波段低，AVWAP 只有一天，圖上以標記表示、不畫成線。</p>
+<img class="chart" src="avwap/tw_current.png" alt="加權指數近 18 個月 Anchored VWAP">
+<h3>最新讀數</h3>
+<p class="cap">收盤 36,033.29，當日低 35,738.68、高 37,646.13。權重為上市市場成交金額。</p>
+<div class="scroll"><table>
+<thead><tr><th>錨定</th><th>錨定日</th><th>AVWAP</th><th>收盤相對</th><th>當日低點相對</th><th>位置</th></tr></thead>
+<tbody>
+<tr><td>2018 年低</td><td>2018-10-26</td><td class='num'>25,145.55</td><td class='num'>+43.30%</td><td class='num'>+42.13%</td><td><span class="pill up">之上</span></td></tr>
+<tr><td>2020 年低</td><td>2020-03-19</td><td class='num'>26,032.25</td><td class='num'>+38.42%</td><td class='num'>+37.29%</td><td><span class="pill up">之上</span></td></tr>
+<tr><td>2022 年低</td><td>2022-10-25</td><td class='num'>29,928.77</td><td class='num'>+20.40%</td><td class='num'>+19.41%</td><td><span class="pill up">之上</span></td></tr>
+<tr><td>2023 年低</td><td>2023-01-03</td><td class='num'>30,265.80</td><td class='num'>+19.06%</td><td class='num'>+18.08%</td><td><span class="pill up">之上</span></td></tr>
+<tr><td>2025 年低</td><td>2025-04-09</td><td class='num'>36,971.89</td><td class='num'>-2.54%</td><td class='num'>-3.34%</td><td><span class="pill dn">之下</span></td></tr>
+<tr><td>2026/07/29 波段低</td><td>2026-07-29</td><td class='num'>45,349.12</td><td class='num'>-20.54%</td><td class='num'>-21.19%</td><td><span class="pill dn">之下</span></td></tr>
+</tbody></table></div>
+
+<ul class="tight">
+<li><b>2018 年低</b>：2018-10-26，當日最低 9,400.69、收盤 9,489.18。</li>
+<li><b>2020 年低</b>：2020-03-19，當日最低 8,523.63、收盤 8,681.34。COVID 低點（台股比 SPX 早 4 個交易日見底）。</li>
+<li><b>2022 年低</b>：2022-10-25，當日最低 12,629.48、收盤 12,666.12。2022-10-25，接近 SPX 的 10/13 低點週。</li>
+<li><b>2023 年低</b>：2023-01-03，當日最低 14,001.97、收盤 14,224.12。同樣是年初的日曆年最低。2023 下半年低點在 10/31（15,975.91），不是 10/27。</li>
+<li><b>2025 年低</b>：2025-04-09，當日最低 17,306.97、收盤 17,391.76。關稅恐慌週；SPX 低點在 4/7，台股 4/4–4/6 適逢清明連假，低點出現在 4/9。</li>
+<li><b>2026/07/29 波段低</b>：2026-07-29，當日最低 39,384.85、收盤 40,039.18。2026 年至今，用左右各 20 個交易日確認過的波段低只清楚出現這一筆（最低 39,384.85，次一交易日隨即反彈）。之後 10 月創高，這條成本線目前已被跌破。</li>
+<li>2026 年<b>日曆年</b>最低其實在 1/2（最低 29,007.75），是年初低點，後面已大幅走高，不適合作「最近一次」波段錨定。</li>
+<li>近六個月（自 2026-05-21 起）最低是 <b>2026-11-20</b>，最低 35,738.68、收盤 36,033.29。這一天就是最新交易日，右側還沒有反彈確認，<b>還不能當成已完成的波段低</b>；若從這天起算 AVWAP，目前只有一個點（約 36,472.70），參考價值有限。因此圖上的 2026 線採用 7/29 確認波段低，11/20 只做標記。</li>
+</ul>
+
+<p class="cap">圖 4｜2018 年至今。</p>
+<img class="chart" src="avwap/tw_long.png" alt="加權指數 2018 至今 Anchored VWAP">
+
+<h3>加權有沒有出現類似的「精確回測」？</h3>
+<ul class="tight">
+<li><b>有，而且很乾淨：2022 年 5–6 月測 2020 年低 AVWAP。</b>
+例如 2022-05-19，當時 2020-03-19 起算的 AVWAP 為 15,878.20，當日最低 15,892.73（+0.09%）。同一段時間還有 5/16、6/14 等多次貼近。這與 SPX 在 2022 年反覆測試 2020 線的情況類似。</li>
+<li><b>2022 年 10 月的年低，並沒有精準停在 2018 或 2020 的 AVWAP 上。</b>
+2022-10-25 相對 2018 年低 AVWAP 低點距離 -14.90%，相對 2020 年低 AVWAP -19.81%，是明顯跌破後才止跌，不是貼線回測。</li>
+<li><b>2025-04-09 年低也沒有停在 2022／2023 AVWAP 上。</b>
+相對 2022 年低 AVWAP -11.41%，相對 2023 年低 AVWAP -12.71%。台股那一週的跌幅，相對這兩條成本線比 SPX 深得多（SPX 的 4/7 低點對 2022 線只有 −0.91%）。</li>
+<li><b>今天（11/20）：</b>相對 2025 年低 AVWAP 低點 -3.34%、收盤 -2.54%；相對 2026/07/29 AVWAP 收盤 -20.54%；相對 2023 年低 AVWAP 仍高 +19.06%。</li>
+</ul>
+
+<h3>加權：同樣的支撐小樣本檢查</h3>
+<div class="scroll"><table>
+<thead><tr><th>錨定</th><th>次數</th><th>之後 20 日</th><th>20 日報酬中位</th><th>之後 60 日</th><th>60 日報酬中位</th></tr></thead>
+<tbody>
+<tr><td>2018 年低</td><td class='num'>4</td><td>守住 2／失守 2</td><td class='num'>+0.87%</td><td>守住 2／失守 2</td><td class='num'>+3.04%</td></tr><tr><td>2020 年低</td><td class='num'>2</td><td>守住 0／失守 2</td><td class='num'>-4.64%</td><td>守住 0／失守 2</td><td class='num'>-8.27%</td></tr><tr><td>2022 年低</td><td class='num'>2</td><td>守住 2／失守 0</td><td class='num'>+8.47%</td><td>守住 2／失守 0</td><td class='num'>+10.65%</td></tr><tr><td>2023 年低</td><td class='num'>5</td><td>守住 5／失守 0</td><td class='num'>+2.62%</td><td>守住 3／失守 2</td><td class='num'>+5.66%</td></tr><tr><td>2025 年低</td><td class='num'>0</td><td colspan='4' class='mut'>樣本期內沒有符合條件的回測（低點落入 ±1%，且之前 20 日收盤都在線上）。</td></tr><tr><td>2026/07/29 波段低</td><td class='num'>2</td><td>守住 1／失守 1</td><td class='num'>-5.87%</td><td>守住 0／失守 2</td><td class='num'>-22.24%</td></tr>
+</tbody></table></div>
+<details class="ev"><summary>逐筆事件（樣本小，僅供描述）</summary>
+<div class="scroll"><table>
+<thead><tr><th>錨定</th><th>回測日</th><th>低點距離</th><th>20 日</th><th>20 日報酬</th><th>60 日</th><th>60 日報酬</th></tr></thead>
+<tbody>
+<tr><td>2018 年低</td><td>2019-05-23</td><td class='num'>+0.67%</td><td>守住</td><td class='num'>+4.81%</td><td>守住</td><td class='num'>+1.75%</td></tr><tr><td>2018 年低</td><td>2019-08-05</td><td class='num'>+0.65%</td><td>守住</td><td class='num'>+1.29%</td><td>守住</td><td class='num'>+10.87%</td></tr><tr><td>2018 年低</td><td>2020-03-10</td><td class='num'>+0.01%</td><td>失守</td><td class='num'>-8.03%</td><td>失守</td><td class='num'>+4.32%</td></tr><tr><td>2018 年低</td><td>2022-06-30</td><td class='num'>-0.34%</td><td>失守</td><td class='num'>+0.45%</td><td>失守</td><td class='num'>-4.77%</td></tr><tr><td>2020 年低</td><td>2022-05-10</td><td class='num'>-0.90%</td><td>失守</td><td class='num'>+3.79%</td><td>失守</td><td class='num'>-8.00%</td></tr><tr><td>2020 年低</td><td>2022-06-14</td><td class='num'>-0.13%</td><td>失守</td><td class='num'>-13.07%</td><td>失守</td><td class='num'>-8.54%</td></tr><tr><td>2022 年低</td><td>2022-12-20</td><td class='num'>-0.18%</td><td>守住</td><td class='num'>+9.34%</td><td>守住</td><td class='num'>+11.29%</td></tr><tr><td>2022 年低</td><td>2023-10-26</td><td class='num'>+0.52%</td><td>守住</td><td class='num'>+7.60%</td><td>守住</td><td class='num'>+10.00%</td></tr><tr><td>2023 年低</td><td>2023-02-22</td><td class='num'>+0.81%</td><td>守住</td><td class='num'>+3.22%</td><td>守住</td><td class='num'>+5.66%</td></tr><tr><td>2023 年低</td><td>2023-03-10</td><td class='num'>+0.87%</td><td>守住</td><td class='num'>+2.62%</td><td>守住</td><td class='num'>+7.78%</td></tr><tr><td>2023 年低</td><td>2023-04-21</td><td class='num'>+0.55%</td><td>守住</td><td class='num'>+3.70%</td><td>守住</td><td class='num'>+9.70%</td></tr><tr><td>2023 年低</td><td>2023-08-14</td><td class='num'>+0.28%</td><td>守住</td><td class='num'>+0.24%</td><td>失守</td><td class='num'>+2.15%</td></tr><tr><td>2023 年低</td><td>2023-09-11</td><td class='num'>+0.58%</td><td>守住</td><td class='num'>+2.39%</td><td>失守</td><td class='num'>+5.15%</td></tr><tr><td>2026/07/29 波段低</td><td>2026-09-14</td><td class='num'>+0.60%</td><td>守住</td><td class='num'>+2.41%</td><td>失守</td><td class='num'>-21.43%</td></tr><tr><td>2026/07/29 波段低</td><td>2026-10-19</td><td class='num'>-0.23%</td><td>失守</td><td class='num'>-14.15%</td><td>失守</td><td class='num'>-23.04%</td></tr>
+</tbody></table></div></details>
+</section>
+
+<p class="foot">
+資料來源：SPX 為 Yahoo Finance <code>^GSPC</code> 未還原日線（價格指數；成交量為 Yahoo 指數成交量）。加權為 FinLab 未還原指數 OHLC，權重為上市市場成交金額。<br>
+價格口徑：兩者皆用原始指數點數，不做還原。AVWAP 典型價 (H+L+C)/3。<br>
+更新時間 2026-11-21 20:08（台北時間）。本頁僅供研究與市場觀察，不構成任何投資建議。<br>
+<a href="./">← 回首頁</a>
+</p>
+</main>
+</body>
+</html>
