@@ -1,17 +1,17 @@
 {
  "market": {
   "data_date": "2026-11-26",
-  "source_updated": "2026-11-26 22:24",
+  "source_updated": "2026-11-27 22:19",
   "page": "market.html"
  },
  "cb": {
   "data_date": "2026-11-26",
-  "source_updated": "2026-11-26 20:24",
+  "source_updated": "2026-11-27 19:17",
   "page": "cb.html"
  },
  "avwap": {
   "data_date": "2026-11-20",
-  "source_updated": "2026-11-21 20:08",
+  "source_updated": "2026-11-27 19:17",
   "page": "avwap.html"
  }
 }
